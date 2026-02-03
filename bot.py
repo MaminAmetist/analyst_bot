@@ -7,6 +7,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
+from db.middlewares import DBSessionMiddleware
 from handlers.query_handlers import router
 from handlers.start_handlers import start_router
 
@@ -31,6 +32,8 @@ async def main() -> None:
     )
 
     dp = Dispatcher()
+
+    dp.update.middleware(DBSessionMiddleware())
 
     dp.include_router(start_router)
     dp.include_router(router)
