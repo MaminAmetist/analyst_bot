@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, DateTime, ForeignKey
 
-from create_db import Base
+from db.create_db import Base
 
 
 class VideoSnapshot(Base):

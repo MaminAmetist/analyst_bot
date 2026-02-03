@@ -3,7 +3,7 @@ from aiogram.types import Message
 from sqlalchemy import create_engine, select, func
 from sqlalchemy.orm import Session
 
-from create_db import DATABASE_URL
+from db.create_db import DATABASE_URL
 from models.videos import Video
 from models.video_snapshots import VideoSnapshot
 from scripts.nl_parser import parse_nl

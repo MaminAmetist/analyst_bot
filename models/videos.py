@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from email.policy import default
 from typing import List
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, DateTime
 
-from create_db import Base
+from db.create_db import Base
 
 
 class Video(Base):

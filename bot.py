@@ -6,7 +6,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
-from create_db import get_db
+from db.create_db import get_db
 from handlers.query_handler import router
 
 load_dotenv()
