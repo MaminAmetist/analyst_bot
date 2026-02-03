@@ -7,8 +7,8 @@ from typing import AsyncIterator
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.videos import Video
-from models.video_snapshots import VideoSnapshot
+from db.models.videos import Video
+from db.models.video_snapshots import VideoSnapshot
 
 
 class DriveJSONLoader:

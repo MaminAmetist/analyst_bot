@@ -1,13 +1,8 @@
 from aiogram import Router
 from aiogram.types import Message
-from sqlalchemy import create_engine, select, func
-from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
 
 from db.database import DATABASE_URL
-from models.videos import Video
-from models.video_snapshots import VideoSnapshot
-from scripts.nl_parser import parse_nl
-from scripts.nl_connect import get_ai_response
 
 router = Router()
 
