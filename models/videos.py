@@ -6,7 +6,7 @@ from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, DateTime
 
-from db.create_db import Base
+from db.database import Base
 
 
 class Video(Base):

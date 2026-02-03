@@ -6,8 +6,9 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
-from db.create_db import get_db
-from handlers.query_handler import router
+from db.create_db import get_async_db
+from handlers.query_handlers import router
+from handlers.start_handlers import start_router
 
 load_dotenv()
 
@@ -21,15 +22,17 @@ async def main() -> None:
 
     logging.basicConfig(level=logging.INFO)
 
-    get_db()
+    get_async_db()
 
     dp.include_router(router)
+    dp.include_router(start_router)
 
     # Логгирование
     logging.basicConfig(
         level=logging.INFO, filemode='w', filename='runner_tests.log', encoding='UTF-8',
         format='%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s'
     )
+    await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
