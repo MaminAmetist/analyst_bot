@@ -1,28 +1,13 @@
-import os
+from collections.abc import AsyncGenerator
 
-from dotenv import load_dotenv
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-load_dotenv()
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-DATABASE_URL = os.getenv('DATABASE_URL')
-
-engine = create_engine(DATABASE_URL, echo=True)
-
-SessionLocal = sessionmaker(bind=engine)
+from db.database import async_session_maker
 
 
-class Base(DeclarativeBase):
-    pass
-
-
-async def get_db():
-    db: Session = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
+    """
+    Предоставляет асинхронную сессию SQLAlchemy для работы с базой данных PostgreSQL.
+    """
+    async with async_session_maker() as session:
+        yield session
