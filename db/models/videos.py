@@ -23,9 +23,15 @@ class Video(Base):
     comments_count: Mapped[int] = mapped_column(Integer)
     reports_count: Mapped[int] = mapped_column(Integer)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(),
-                                                 onupdate=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False
+    )
 
     snapshots: Mapped[List["VideoSnapshot"]] = relationship(
         back_populates="video",

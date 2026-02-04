@@ -81,13 +81,11 @@ class DriveJSONLoader:
         )
 
 
-def parse_utc(dt: str) -> datetime:
+def parse_utc(value: str) -> datetime:
     """
-    Парсит ISO-дату.
+    Преобразует ISO-дату в timezone-aware UTC datetime.
     """
-    parsed = datetime.fromisoformat(dt.replace("Z", "+00:00"))
-
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-
-    return parsed
+    dt = datetime.fromisoformat(value)
+    if dt.tzinfo is None:
+        raise ValueError("Datetime must contain timezone info")
+    return dt.astimezone(timezone.utc)
