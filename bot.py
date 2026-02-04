@@ -8,6 +8,7 @@ from aiogram.enums import ParseMode
 from dotenv import load_dotenv
 
 from db.middlewares import DBSessionMiddleware
+from handlers.db_load_handler import load_router
 from handlers.query_handlers import router
 from handlers.start_handlers import start_router
 
@@ -36,6 +37,7 @@ async def main() -> None:
     dp.update.middleware(DBSessionMiddleware())
 
     dp.include_router(start_router)
+    dp.include_router(load_router)
     dp.include_router(router)
 
     await dp.start_polling(bot)

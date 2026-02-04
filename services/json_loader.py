@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import aiohttp
-import ijson
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import AsyncIterator
 
+import aiohttp
+import ijson
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models.videos import Video
 from db.models.video_snapshots import VideoSnapshot
+from db.models.videos import Video
 
 
 class DriveJSONLoader:
@@ -21,30 +21,24 @@ class DriveJSONLoader:
         self._batch_size = batch_size
 
     async def load(self, session: AsyncSession) -> int:
-        """
-        Загружает данные в БД.
-
-        :param session: AsyncSession
-        :return: количество загруженных видео
-        """
         count = 0
 
         async with aiohttp.ClientSession() as http:
             async with http.get(self._drive_url) as response:
                 response.raise_for_status()
 
-                async for video_data in self._iter_videos(response):
-                    session.add(self._build_video(video_data))
+                async with session.begin():
+                    async for video_data in self._iter_videos(response):
+                        video = self._build_video(video_data)
+                        session.add(video)
 
-                    for snap in video_data["snapshots"]:
-                        session.add(self._build_snapshot(snap))
+                        for snap in video_data["snapshots"]:
+                            session.add(self._build_snapshot(snap))
 
-                    count += 1
+                        count += 1
 
-                    if count % self._batch_size == 0:
-                        await session.flush()
-
-                await session.commit()
+                        if count % self._batch_size == 0:
+                            await session.flush()
 
         return count
 
@@ -60,13 +54,13 @@ class DriveJSONLoader:
         return Video(
             id=data["id"],
             creator_id=data["creator_id"],
-            video_created_at=datetime.fromisoformat(data["video_created_at"]),
+            video_created_at=parse_utc(data["video_created_at"]),
             views_count=data["views_count"],
             likes_count=data["likes_count"],
             comments_count=data["comments_count"],
             reports_count=data["reports_count"],
-            created_at=datetime.fromisoformat(data["created_at"]),
-            updated_at=datetime.fromisoformat(data["updated_at"]),
+            created_at=parse_utc(data["created_at"]),
+            updated_at=parse_utc(data["updated_at"]),
         )
 
     @staticmethod
@@ -82,6 +76,18 @@ class DriveJSONLoader:
             delta_likes_count=data["delta_likes_count"],
             delta_comments_count=data["delta_comments_count"],
             delta_reports_count=data["delta_reports_count"],
-            created_at=datetime.fromisoformat(data["created_at"]),
-            updated_at=datetime.fromisoformat(data["updated_at"]),
+            created_at=parse_utc(data["created_at"]),
+            updated_at=parse_utc(data["updated_at"]),
         )
+
+
+def parse_utc(dt: str) -> datetime:
+    """
+    Парсит ISO-дату.
+    """
+    parsed = datetime.fromisoformat(dt.replace("Z", "+00:00"))
+
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+
+    return parsed
