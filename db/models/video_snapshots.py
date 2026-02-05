@@ -21,7 +21,13 @@ class VideoSnapshot(Base):
     delta_comments_count: Mapped[int] = mapped_column(Integer)
     delta_reports_count: Mapped[int] = mapped_column(Integer)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
 
     video: Mapped["Video"] = relationship(back_populates="snapshots")

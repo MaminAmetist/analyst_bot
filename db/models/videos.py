@@ -25,12 +25,12 @@ class Video(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        nullable=False
+        nullable=False,
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        nullable=False
+        nullable=False,
     )
 
     snapshots: Mapped[List["VideoSnapshot"]] = relationship(
