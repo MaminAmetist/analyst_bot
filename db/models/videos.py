@@ -5,7 +5,6 @@ from typing import List
 
 from sqlalchemy import String, Integer, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
 
 from db.database import Base
 
